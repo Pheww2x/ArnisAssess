@@ -8,6 +8,7 @@ import {
     Text,
     View,
 } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { colors } from "./src/constants/colors";
 import { LoginForm } from "./src/features/auth/components/LoginForm";
 import {
@@ -60,8 +61,11 @@ export default function App() {
   }, []);
 
   return (
-    <>
-      <StatusBar barStyle="light-content" backgroundColor={colors.tealDark} />
+    <SafeAreaProvider>
+      <StatusBar
+        barStyle={user ? "dark-content" : "light-content"}
+        backgroundColor={user ? colors.paper : colors.tealDark}
+      />
       <View style={styles.root}>
         {isOffline && (
           <View accessibilityLiveRegion="polite" style={styles.offlineBanner}>
@@ -108,7 +112,7 @@ export default function App() {
           </ScrollView>
         )}
       </View>
-    </>
+    </SafeAreaProvider>
   );
 }
 
@@ -132,19 +136,19 @@ const styles = StyleSheet.create({
   formSection: { paddingHorizontal: 26, paddingTop: 26, gap: 18 },
   offlineBanner: {
     alignItems: "center",
-    backgroundColor: "#FFF0D0",
+    backgroundColor: colors.warningSoft,
     flexDirection: "row",
     gap: 9,
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
   offlineDot: {
-    backgroundColor: "#B96C1B",
+    backgroundColor: colors.warning,
     borderRadius: 4,
     height: 8,
     width: 8,
   },
-  offlineText: { color: "#70440F", flex: 1, fontSize: 12, fontWeight: "700" },
+  offlineText: { color: colors.ink, flex: 1, fontSize: 12, fontWeight: "700" },
   loading: { alignItems: "center", flex: 1, gap: 14, justifyContent: "center" },
   loadingText: { color: colors.muted, fontSize: 14 },
   loginTitle: {

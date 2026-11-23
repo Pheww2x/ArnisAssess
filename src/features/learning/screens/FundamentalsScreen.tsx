@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { AppIcon } from "../../../components/AppIcon";
 import learningContent from "../../../../assets/data/learning-content.json";
 import { colors } from "../../../constants/colors";
 
@@ -72,7 +73,7 @@ export function FundamentalsScreen() {
                     accessibilityLabel={topic.image_placeholder}
                     style={styles.imagePlaceholder}
                   >
-                    <Text style={styles.imageLabel}>IMAGE PLACEHOLDER</Text>
+                    <AppIcon color={colors.tealDark} name="book" size={22} />
                     <Text style={styles.imageDescription}>
                       {topic.image_placeholder}
                     </Text>
@@ -90,27 +91,27 @@ export function FundamentalsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   groupToggle: {
-    backgroundColor: "#EAF0EF",
-    borderRadius: 8,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 9,
     flexDirection: "row",
     marginHorizontal: 20,
-    padding: 3,
+    padding: 4,
   },
   groupButton: {
     alignItems: "center",
-    borderRadius: 6,
+    borderRadius: 7,
     flex: 1,
     justifyContent: "center",
-    minHeight: 36,
+    minHeight: 40,
   },
   groupSelected: { backgroundColor: colors.white },
-  groupText: { color: colors.muted, fontSize: 11, fontWeight: "700" },
+  groupText: { color: colors.muted, fontSize: 12, fontWeight: "700" },
   groupTextSelected: { color: colors.tealDark },
-  topicList: { gap: 8, padding: 16, paddingBottom: 24 },
+  topicList: { gap: 9, padding: 16, paddingBottom: 28 },
   topic: {
     backgroundColor: colors.white,
     borderColor: colors.line,
-    borderRadius: 9,
+    borderRadius: 11,
     borderWidth: 1,
     overflow: "hidden",
   },
@@ -118,49 +119,43 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    minHeight: 49,
-    paddingHorizontal: 13,
+    minHeight: 56,
+    paddingHorizontal: 15,
   },
-  topicTitle: { color: colors.ink, flex: 1, fontSize: 13, fontWeight: "800" },
+  topicTitle: { color: colors.ink, flex: 1, fontSize: 14, fontWeight: "800" },
   chevron: {
     color: colors.tealDark,
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: "600",
     paddingLeft: 10,
   },
   topicBody: {
     borderTopColor: colors.line,
     borderTopWidth: 1,
-    gap: 9,
-    padding: 13,
+    gap: 11,
+    padding: 15,
   },
-  bodyText: { color: colors.muted, fontSize: 12, lineHeight: 18 },
+  bodyText: { color: colors.muted, fontSize: 13, lineHeight: 19 },
   stepsTitle: {
     color: colors.ink,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: "800",
     marginTop: 3,
   },
-  step: { color: colors.ink, fontSize: 12, lineHeight: 18 },
+  step: { color: colors.ink, fontSize: 12, lineHeight: 19 },
   imagePlaceholder: {
     alignItems: "center",
-    backgroundColor: "#EAF0EF",
-    borderRadius: 8,
-    gap: 6,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 9,
+    gap: 7,
     justifyContent: "center",
-    minHeight: 106,
-    padding: 12,
-  },
-  imageLabel: {
-    color: colors.tealDark,
-    fontSize: 10,
-    fontWeight: "900",
-    letterSpacing: 1,
+    minHeight: 90,
+    padding: 13,
   },
   imageDescription: {
     color: colors.muted,
-    fontSize: 11,
-    lineHeight: 16,
+    fontSize: 12,
+    lineHeight: 18,
     textAlign: "center",
   },
 });

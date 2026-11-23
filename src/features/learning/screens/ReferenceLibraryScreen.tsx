@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { AppIcon } from "../../../components/AppIcon";
 import referenceData from "../../../../assets/data/reference-library.json";
 import skillsData from "../../../../assets/data/skills.json";
 import { colors } from "../../../constants/colors";
@@ -91,14 +92,27 @@ export function ReferenceLibraryScreen({ canManage }: { canManage: boolean }) {
                             ? "Single phase"
                             : phase.phase}
                         </Text>
-                        <Text style={styles.unvalidated}>NOT VALIDATED</Text>
+                        <Text
+                          style={
+                            phase.validated
+                              ? styles.validated
+                              : styles.unvalidated
+                          }
+                        >
+                          {phase.validated ? "VALIDATED" : "NOT VALIDATED"}
+                        </Text>
                       </View>
                       <View
                         accessibilityLabel={phase.image_placeholder}
                         style={styles.imagePlaceholder}
                       >
+                        <AppIcon
+                          color={colors.tealDark}
+                          name="image"
+                          size={20}
+                        />
                         <Text style={styles.imageLabel}>
-                          REFERENCE IMAGE PLACEHOLDER
+                          REFERENCE IMAGE NOT ADDED
                         </Text>
                         <Text style={styles.imageDescription}>
                           {phase.description}
@@ -132,22 +146,24 @@ export function ReferenceLibraryScreen({ canManage }: { canManage: boolean }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  categories: { gap: 7, paddingHorizontal: 16, paddingVertical: 3 },
+  categories: { gap: 8, paddingHorizontal: 16, paddingVertical: 4 },
   category: {
-    backgroundColor: "#EAF0EF",
-    borderRadius: 7,
+    backgroundColor: colors.white,
+    borderColor: colors.line,
+    borderRadius: 8,
+    borderWidth: 1,
     justifyContent: "center",
-    minHeight: 31,
-    paddingHorizontal: 10,
+    minHeight: 36,
+    paddingHorizontal: 11,
   },
-  categorySelected: { backgroundColor: colors.teal },
-  categoryText: { color: colors.muted, fontSize: 10, fontWeight: "700" },
+  categorySelected: { backgroundColor: colors.ink, borderColor: colors.ink },
+  categoryText: { color: colors.muted, fontSize: 11, fontWeight: "700" },
   categoryTextSelected: { color: colors.white },
-  list: { gap: 8, padding: 15, paddingBottom: 24 },
+  list: { gap: 9, padding: 15, paddingBottom: 28 },
   card: {
     backgroundColor: colors.white,
     borderColor: colors.line,
-    borderRadius: 9,
+    borderRadius: 11,
     borderWidth: 1,
     overflow: "hidden",
   },
@@ -155,31 +171,33 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    minHeight: 53,
-    paddingHorizontal: 13,
+    minHeight: 58,
+    paddingHorizontal: 15,
   },
   cardCopy: { gap: 3 },
   categoryLabel: {
     color: colors.teal,
-    fontSize: 9,
+    fontSize: 10,
     fontWeight: "800",
     letterSpacing: 0.8,
     textTransform: "uppercase",
   },
-  skillName: { color: colors.ink, fontSize: 13, fontWeight: "800" },
+  skillName: { color: colors.ink, fontSize: 14, fontWeight: "800" },
   chevron: { color: colors.tealDark, fontSize: 20 },
   details: {
     borderTopColor: colors.line,
     borderTopWidth: 1,
-    gap: 10,
-    padding: 12,
+    gap: 12,
+    padding: 14,
   },
-  instructions: { color: colors.muted, fontSize: 11, lineHeight: 16 },
+  instructions: { color: colors.muted, fontSize: 12, lineHeight: 18 },
   phase: {
-    backgroundColor: colors.paper,
-    borderRadius: 8,
-    gap: 7,
-    padding: 10,
+    backgroundColor: colors.white,
+    borderColor: colors.line,
+    borderRadius: 9,
+    borderWidth: 1,
+    gap: 8,
+    padding: 12,
   },
   phaseHeading: {
     alignItems: "center",
@@ -188,28 +206,34 @@ const styles = StyleSheet.create({
   },
   phaseTitle: {
     color: colors.ink,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "800",
     textTransform: "capitalize",
   },
-  unvalidated: { color: colors.danger, fontSize: 8, fontWeight: "900" },
+  validated: { color: colors.success, fontSize: 9, fontWeight: "900" },
+  unvalidated: { color: colors.warning, fontSize: 9, fontWeight: "900" },
   imagePlaceholder: {
     alignItems: "center",
-    backgroundColor: "#E7EEED",
-    borderRadius: 6,
-    gap: 4,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 8,
+    gap: 6,
     justifyContent: "center",
-    minHeight: 72,
-    padding: 8,
+    minHeight: 90,
+    padding: 12,
   },
   imageLabel: {
     color: colors.tealDark,
-    fontSize: 8,
+    fontSize: 9,
     fontWeight: "900",
     letterSpacing: 0.7,
   },
-  imageDescription: { color: colors.muted, fontSize: 10, textAlign: "center" },
-  keyPointsTitle: { color: colors.ink, fontSize: 10, fontWeight: "800" },
-  keyPoint: { color: colors.muted, fontSize: 10, lineHeight: 15 },
-  managementNote: { color: colors.muted, fontSize: 10, lineHeight: 15 },
+  imageDescription: {
+    color: colors.muted,
+    fontSize: 11,
+    lineHeight: 16,
+    textAlign: "center",
+  },
+  keyPointsTitle: { color: colors.ink, fontSize: 11, fontWeight: "800" },
+  keyPoint: { color: colors.muted, fontSize: 11, lineHeight: 16 },
+  managementNote: { color: colors.muted, fontSize: 11, lineHeight: 16 },
 });

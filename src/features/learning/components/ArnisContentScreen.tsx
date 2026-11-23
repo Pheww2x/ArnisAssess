@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { PageHeader } from "../../../components/PageHeader";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { colors } from "../../../constants/colors";
 import { ReferenceManagerScreen } from "../../assessment/components/ReferenceManagerScreen";
@@ -26,9 +27,13 @@ export function ArnisContentScreen({ profile }: { profile: Profile }) {
   return (
     <ScreenContainer>
       <View style={styles.screen}>
-        <Text style={styles.kicker}>LEARNING</Text>
-        <Text style={styles.title}>Arnis Fundamentals</Text>
+        <PageHeader
+          eyebrow="LEARNING LIBRARY"
+          subtitle="Build a strong foundation in Arnis."
+          title="Arnis fundamentals"
+        />
         <ScrollView
+          style={styles.tabScroll}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.tabList}
@@ -67,29 +72,20 @@ export function ArnisContentScreen({ profile }: { profile: Profile }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, gap: 12, paddingTop: 21 },
-  kicker: {
-    color: colors.teal,
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 1.1,
-    paddingHorizontal: 20,
-  },
-  title: {
-    color: colors.ink,
-    fontSize: 23,
-    fontWeight: "800",
-    paddingHorizontal: 20,
-  },
-  tabList: { gap: 7, paddingHorizontal: 20, paddingVertical: 2 },
+  screen: { flex: 1, gap: 15, paddingHorizontal: 20, paddingTop: 16 },
+  tabScroll: { flexGrow: 0, flexShrink: 0, height: 44 },
+  tabList: { alignItems: "center", gap: 8, paddingVertical: 2 },
   tab: {
-    backgroundColor: "#EAF0EF",
-    borderRadius: 8,
+    alignSelf: "center",
+    backgroundColor: colors.white,
+    borderColor: colors.line,
+    borderRadius: 9,
+    borderWidth: 1,
     justifyContent: "center",
-    minHeight: 37,
-    paddingHorizontal: 12,
+    minHeight: 40,
+    paddingHorizontal: 13,
   },
-  activeTab: { backgroundColor: colors.teal },
+  activeTab: { backgroundColor: colors.ink, borderColor: colors.ink },
   tabText: { color: colors.muted, fontSize: 11, fontWeight: "700" },
   activeTabText: { color: colors.white },
 });

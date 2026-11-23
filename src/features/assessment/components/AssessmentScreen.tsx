@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+    ActivityIndicator,
     Image,
     PermissionsAndroid,
     Platform,
@@ -10,9 +11,12 @@ import {
     View,
 } from "react-native";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { AppIcon } from "../../../components/AppIcon";
 import thresholds from "../../../../assets/data/analysis-thresholds.json";
 import skillsData from "../../../../assets/data/skills.json";
 import { Button } from "../../../components/Button";
+import { EmptyState } from "../../../components/EmptyState";
+import { PageHeader } from "../../../components/PageHeader";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TextInput } from "../../../components/TextInput";
 import { colors } from "../../../constants/colors";
@@ -428,14 +432,20 @@ export function AssessmentScreen({ profile }: { profile: Profile }) {
             onPress={() => void pickPhoto(phase, "camera")}
             style={styles.imageAction}
           >
-            <Text style={styles.imageActionText}>Camera</Text>
+            <View style={styles.imageActionContent}>
+              <AppIcon color={colors.tealDark} name="camera" size={16} />
+              <Text style={styles.imageActionText}>Camera</Text>
+            </View>
           </Pressable>
           <Pressable
             accessibilityRole="button"
             onPress={() => void pickPhoto(phase, "library")}
             style={styles.imageAction}
           >
-            <Text style={styles.imageActionText}>Gallery</Text>
+            <View style={styles.imageActionContent}>
+              <AppIcon color={colors.tealDark} name="image" size={16} />
+              <Text style={styles.imageActionText}>Gallery</Text>
+            </View>
           </Pressable>
         </View>
         {images[phase] && (
@@ -642,11 +652,17 @@ export function AssessmentScreen({ profile }: { profile: Profile }) {
       <ScrollView
         contentContainerStyle={styles.screen}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.kicker}>
-          {isTeacher ? "TEACHER PORTAL" : "STUDENT PORTAL"}
-        </Text>
-        <Text style={styles.title}>Assessment</Text>
+        <PageHeader
+          eyebrow={isTeacher ? "TEACHER PORTAL" : "STUDENT PORTAL"}
+          subtitle={
+            isTeacher
+              ? "Create assessments and review student submissions."
+              : "Complete assigned work and follow your progress."
+          }
+          title="Assessments"
+        />
         {isTeacher && (
           <View style={styles.viewSwitch}>
             {(["create", "review"] as const).map((item) => (
@@ -676,7 +692,10 @@ export function AssessmentScreen({ profile }: { profile: Profile }) {
         )}
 
         {isLoading ? (
-          <Text style={styles.stateText}>Loading assessment data…</Text>
+          <View style={styles.loading}>
+            <ActivityIndicator color={colors.teal} size="small" />
+            <Text style={styles.stateText}>Loading assessment data…</Text>
+          </View>
         ) : !isTeacher ? (
           selectedAssignment ? (
             <View style={styles.section}>
@@ -1044,21 +1063,6 @@ export function AssessmentScreen({ profile }: { profile: Profile }) {
   );
 }
 
-function EmptyState({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <View style={styles.empty}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <Text style={styles.bodyText}>{description}</Text>
-    </View>
-  );
-}
-
 function phaseLabel(phase: AssessmentPhase): string {
   return {
     starting: "Starting position",
@@ -1069,7 +1073,7 @@ function phaseLabel(phase: AssessmentPhase): string {
 }
 
 const styles = StyleSheet.create({
-  screen: { gap: 12, padding: 18, paddingTop: 24, paddingBottom: 32 },
+  screen: { gap: 16, padding: 20, paddingTop: 16, paddingBottom: 32 },
   kicker: {
     color: colors.teal,
     fontSize: 10,
@@ -1078,183 +1082,201 @@ const styles = StyleSheet.create({
   },
   title: { color: colors.ink, fontSize: 24, fontWeight: "800" },
   viewSwitch: {
-    backgroundColor: "#EAF0EF",
-    borderRadius: 8,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 10,
     flexDirection: "row",
-    padding: 3,
+    padding: 4,
   },
   viewChoice: {
     alignItems: "center",
-    borderRadius: 6,
+    borderRadius: 7,
     flex: 1,
     justifyContent: "center",
-    minHeight: 37,
+    minHeight: 40,
   },
-  viewChoiceActive: { backgroundColor: colors.white },
-  viewChoiceText: { color: colors.muted, fontSize: 11, fontWeight: "700" },
-  viewChoiceTextActive: { color: colors.tealDark },
-  sectionTitle: { color: colors.ink, fontSize: 13, fontWeight: "800" },
-  choiceList: { gap: 7 },
+  viewChoiceActive: {
+    backgroundColor: colors.white,
+    elevation: 1,
+  },
+  viewChoiceText: { color: colors.muted, fontSize: 12, fontWeight: "700" },
+  viewChoiceTextActive: { color: colors.tealDark, fontWeight: "800" },
+  sectionTitle: { color: colors.ink, fontSize: 15, fontWeight: "800" },
+  choiceList: { gap: 8, paddingVertical: 2 },
   choice: {
-    backgroundColor: colors.white,
-    borderColor: colors.line,
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 3,
-    justifyContent: "center",
-    minHeight: 50,
-    paddingHorizontal: 10,
-  },
-  choiceActive: { backgroundColor: colors.teal, borderColor: colors.teal },
-  choiceText: { color: colors.ink, fontSize: 11, fontWeight: "800" },
-  choiceSub: { color: colors.muted, fontSize: 9 },
-  choiceTextActive: { color: colors.white },
-  skillGrid: { flexDirection: "row", flexWrap: "wrap", gap: 7 },
-  skillCard: {
-    backgroundColor: colors.white,
-    borderColor: colors.line,
-    borderRadius: 8,
-    borderWidth: 1,
-    flexBasis: "31%",
-    flexGrow: 1,
-    gap: 4,
-    justifyContent: "center",
-    minHeight: 56,
-    paddingHorizontal: 8,
-  },
-  skillName: { color: colors.ink, fontSize: 10, fontWeight: "800" },
-  section: {
     backgroundColor: colors.white,
     borderColor: colors.line,
     borderRadius: 10,
     borderWidth: 1,
-    gap: 12,
-    padding: 14,
+    gap: 4,
+    justifyContent: "center",
+    minHeight: 56,
+    paddingHorizontal: 12,
   },
-  bodyText: { color: colors.muted, fontSize: 11, lineHeight: 16 },
+  choiceActive: { backgroundColor: colors.teal, borderColor: colors.teal },
+  choiceText: { color: colors.ink, fontSize: 12, fontWeight: "800" },
+  choiceSub: { color: colors.muted, fontSize: 10 },
+  choiceTextActive: { color: colors.white },
+  skillGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  skillCard: {
+    backgroundColor: colors.white,
+    borderColor: colors.line,
+    borderRadius: 10,
+    borderWidth: 1,
+    flexBasis: "31%",
+    flexGrow: 1,
+    gap: 5,
+    justifyContent: "center",
+    minHeight: 64,
+    paddingHorizontal: 10,
+  },
+  skillName: { color: colors.ink, fontSize: 11, fontWeight: "800" },
+  section: {
+    backgroundColor: colors.white,
+    borderColor: colors.line,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 14,
+    padding: 16,
+  },
+  bodyText: { color: colors.muted, fontSize: 13, lineHeight: 19 },
   referencePhase: {
     backgroundColor: colors.paper,
-    borderRadius: 8,
-    gap: 7,
-    padding: 9,
+    borderRadius: 10,
+    gap: 8,
+    padding: 10,
   },
-  phaseTitle: { color: colors.ink, fontSize: 11, fontWeight: "800" },
-  referenceImage: { backgroundColor: "#EAF0EF", height: 120, width: "100%" },
+  phaseTitle: { color: colors.ink, fontSize: 12, fontWeight: "800" },
+  referenceImage: {
+    backgroundColor: colors.tealSoft,
+    borderRadius: 8,
+    height: 140,
+    width: "100%",
+  },
   referencePlaceholder: {
-    backgroundColor: "#EAF0EF",
-    borderRadius: 6,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 8,
     color: colors.muted,
-    fontSize: 10,
-    lineHeight: 15,
-    padding: 14,
+    fontSize: 12,
+    lineHeight: 18,
+    padding: 16,
     textAlign: "center",
   },
   statusNote: {
-    backgroundColor: "#EEF5F4",
-    borderRadius: 7,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 9,
     color: colors.tealDark,
-    fontSize: 10,
-    lineHeight: 15,
-    padding: 10,
+    fontSize: 11,
+    lineHeight: 17,
+    padding: 12,
   },
   phaseCard: {
     backgroundColor: colors.paper,
-    borderRadius: 8,
-    gap: 7,
-    padding: 10,
+    borderRadius: 10,
+    gap: 9,
+    padding: 12,
   },
   phaseHeader: {
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  imageReady: { color: colors.success, fontSize: 9, fontWeight: "800" },
-  imageNeeded: { color: colors.danger, fontSize: 9, fontWeight: "800" },
-  imageActions: { flexDirection: "row", gap: 7 },
+  imageReady: { color: colors.success, fontSize: 10, fontWeight: "800" },
+  imageNeeded: { color: colors.danger, fontSize: 10, fontWeight: "800" },
+  imageActions: { flexDirection: "row", gap: 8 },
   imageAction: {
     alignItems: "center",
-    backgroundColor: "#E1F0EE",
-    borderRadius: 7,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 8,
     flex: 1,
     justifyContent: "center",
-    minHeight: 34,
+    minHeight: 42,
   },
-  imageActionText: { color: colors.tealDark, fontSize: 10, fontWeight: "800" },
-  photoMeta: { color: colors.muted, fontSize: 9 },
-  passText: { color: colors.success, fontSize: 10, lineHeight: 15 },
-  failText: { color: colors.danger, fontSize: 10, lineHeight: 15 },
+  imageActionContent: { alignItems: "center", flexDirection: "row", gap: 7 },
+  imageActionText: { color: colors.tealDark, fontSize: 11, fontWeight: "800" },
+  photoMeta: { color: colors.muted, fontSize: 10 },
+  passText: { color: colors.success, fontSize: 11, lineHeight: 17 },
+  failText: { color: colors.danger, fontSize: 11, lineHeight: 17 },
   preliminary: {
-    backgroundColor: "#FFF0D0",
-    borderRadius: 7,
-    color: "#70440F",
-    fontSize: 10,
+    backgroundColor: colors.warningSoft,
+    borderRadius: 8,
+    color: "#77561D",
+    fontSize: 11,
     fontWeight: "900",
-    padding: 9,
+    padding: 11,
     textAlign: "center",
   },
   rubricArea: {
     borderTopColor: colors.line,
     borderTopWidth: 1,
-    gap: 7,
-    paddingTop: 9,
+    gap: 9,
+    paddingTop: 12,
   },
-  areaTitle: { color: colors.ink, fontSize: 11, fontWeight: "800" },
+  areaTitle: { color: colors.ink, fontSize: 13, fontWeight: "800" },
   criterionRow: {
     alignItems: "center",
     flexDirection: "row",
-    gap: 6,
+    gap: 8,
     justifyContent: "space-between",
+    minHeight: 42,
   },
-  criterionName: { color: colors.muted, flex: 1, fontSize: 9, lineHeight: 13 },
-  scoreButtons: { flexDirection: "row", gap: 4 },
+  criterionName: { color: colors.muted, flex: 1, fontSize: 11, lineHeight: 16 },
+  scoreButtons: { flexDirection: "row", gap: 5 },
   scoreButton: {
     alignItems: "center",
-    backgroundColor: "#EAF0EF",
-    borderRadius: 5,
-    height: 28,
+    backgroundColor: colors.tealSoft,
+    borderRadius: 7,
+    height: 34,
     justifyContent: "center",
-    width: 28,
+    width: 34,
   },
   scoreSelected: { backgroundColor: colors.teal },
-  scoreText: { color: colors.muted, fontSize: 10, fontWeight: "800" },
+  scoreText: { color: colors.muted, fontSize: 12, fontWeight: "800" },
   scoreTextSelected: { color: colors.white },
   optionalImages: { gap: 7 },
   optionalTitle: { color: colors.ink, fontSize: 11, fontWeight: "800" },
-  list: { gap: 8 },
+  list: { gap: 9 },
   listCard: {
     backgroundColor: colors.white,
     borderColor: colors.line,
-    borderRadius: 9,
-    borderWidth: 1,
-    gap: 5,
-    padding: 13,
-  },
-  studentName: { color: colors.ink, fontSize: 13, fontWeight: "800" },
-  link: { color: colors.tealDark, fontSize: 10, fontWeight: "800" },
-  reviewImage: {
-    backgroundColor: colors.paper,
-    borderRadius: 8,
-    gap: 5,
-    padding: 8,
-  },
-  reviewPhoto: { height: 180, width: "100%" },
-  empty: {
-    backgroundColor: colors.white,
-    borderColor: colors.line,
-    borderRadius: 9,
+    borderRadius: 11,
     borderWidth: 1,
     gap: 7,
-    padding: 14,
+    padding: 15,
   },
-  stateText: { color: colors.muted, fontSize: 12, padding: 12 },
-  error: { color: colors.danger, fontSize: 11, lineHeight: 17 },
-  notice: { color: colors.success, fontSize: 11, lineHeight: 16 },
+  studentName: { color: colors.ink, fontSize: 14, fontWeight: "800" },
+  link: { color: colors.tealDark, fontSize: 11, fontWeight: "800" },
+  reviewImage: {
+    backgroundColor: colors.paper,
+    borderRadius: 10,
+    gap: 7,
+    padding: 10,
+  },
+  reviewPhoto: { height: 200, width: "100%" },
+  stateText: { color: colors.muted, fontSize: 12 },
+  loading: { alignItems: "center", flexDirection: "row", gap: 9, paddingVertical: 16 },
+  error: {
+    backgroundColor: colors.dangerSoft,
+    borderRadius: 9,
+    color: colors.danger,
+    fontSize: 12,
+    lineHeight: 18,
+    padding: 12,
+  },
+  notice: {
+    backgroundColor: colors.successSoft,
+    borderRadius: 9,
+    color: colors.success,
+    fontSize: 12,
+    lineHeight: 18,
+    padding: 12,
+  },
   cancel: {
     color: colors.muted,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "700",
-    padding: 8,
+    minHeight: 44,
+    padding: 12,
     textAlign: "center",
   },
-  refresh: { alignItems: "center", padding: 7 },
+  refresh: { alignItems: "center", minHeight: 44, justifyContent: "center", padding: 7 },
 });

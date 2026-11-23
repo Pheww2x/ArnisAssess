@@ -23,17 +23,17 @@ export function TextInput({ label, error, ...props }: Props) {
   );
 }
 const styles = StyleSheet.create({
-  wrap: { gap: 7 },
-  label: { color: colors.ink, fontSize: 13, fontWeight: "700" },
+  wrap: { gap: 6 },
+  label: { color: colors.ink, fontSize: 12, fontWeight: "700" },
   input: {
     backgroundColor: colors.white,
     borderColor: colors.line,
-    borderRadius: 12,
+    borderRadius: 9,
     borderWidth: 1,
     color: colors.ink,
-    fontSize: 16,
-    minHeight: 52,
-    paddingHorizontal: 16,
+    fontSize: 15,
+    minHeight: 48,
+    paddingHorizontal: 14,
   },
   invalid: { borderColor: colors.danger },
   error: { color: colors.danger, fontSize: 12 },

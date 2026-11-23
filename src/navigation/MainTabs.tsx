@@ -1,4 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { AppIcon, type AppIconName } from "../components/AppIcon";
 import { colors } from "../constants/colors";
 import { AssessmentScreen } from "../features/assessment/components/AssessmentScreen";
 import { DashboardScreen } from "../features/dashboard/screens/DashboardScreen";
@@ -9,6 +12,18 @@ import type { Profile } from "../features/profile/types";
 import { StudentsScreen } from "../features/students/components/StudentsScreen";
 
 const Tab = createBottomTabNavigator();
+const tabIcons: Record<string, AppIconName> = {
+  Dashboard: "dashboard",
+  Students: "students",
+  Assessment: "assessment",
+  Fundamentals: "book",
+  Reports: "reports",
+  Progress: "reports",
+  Profile: "profile",
+};
+const tabLabels: Record<string, string> = {
+  Assessment: "Assessments",
+};
 
 const placeholders = {
   Students:
@@ -30,6 +45,7 @@ export function MainTabs({
   profile: Profile;
   onSignOut: () => void;
 }) {
+  const insets = useSafeAreaInsets();
   const teacherTabs = [
     "Dashboard",
     "Students",
@@ -49,19 +65,45 @@ export function MainTabs({
 
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: colors.teal,
+        tabBarActiveTintColor: colors.tealDark,
         tabBarInactiveTintColor: colors.muted,
-        tabBarLabelStyle: { fontSize: 10, fontWeight: "700" },
+        tabBarIcon: ({ focused, color }) => (
+          <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+            <AppIcon
+              color={focused ? colors.tealDark : color}
+              name={tabIcons[route.name] ?? "dashboard"}
+              size={19}
+            />
+          </View>
+        ),
+        tabBarLabel: ({ color, focused }) => (
+          <Text
+            adjustsFontSizeToFit
+            minimumFontScale={0.86}
+            numberOfLines={1}
+            style={[
+              styles.tabLabel,
+              { color },
+              focused && styles.tabLabelActive,
+            ]}
+          >
+            {tabLabels[route.name] ?? route.name}
+          </Text>
+        ),
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.line,
-          height: 62,
-          paddingBottom: 7,
+          borderTopWidth: 1,
+          elevation: 8,
+          height: 64 + insets.bottom,
+          paddingBottom: Math.max(insets.bottom, 7),
           paddingTop: 5,
         },
-      }}
+        tabBarItemStyle: { paddingHorizontal: 1, paddingTop: 2 },
+        tabBarHideOnKeyboard: true,
+      })}
     >
       {tabs.map((tab) => {
         if (tab === "Dashboard") {
@@ -111,3 +153,21 @@ export function MainTabs({
     </Tab.Navigator>
   );
 }
+
+const styles = {
+  iconWrap: {
+    alignItems: "center" as const,
+    borderRadius: 9,
+    height: 29,
+    justifyContent: "center" as const,
+    width: 38,
+  },
+  iconWrapActive: { backgroundColor: colors.tealSoft },
+  tabLabel: {
+    fontSize: 9,
+    fontWeight: "600" as const,
+    lineHeight: 12,
+    marginTop: 1,
+  },
+  tabLabelActive: { fontWeight: "800" as const },
+};

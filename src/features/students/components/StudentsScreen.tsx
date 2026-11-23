@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+    ActivityIndicator,
     Modal,
     Pressable,
     ScrollView,
@@ -7,7 +8,10 @@ import {
     Text,
     View,
 } from "react-native";
+import { AppIcon } from "../../../components/AppIcon";
 import { Button } from "../../../components/Button";
+import { EmptyState } from "../../../components/EmptyState";
+import { PageHeader } from "../../../components/PageHeader";
 import { ScreenContainer } from "../../../components/ScreenContainer";
 import { TextInput } from "../../../components/TextInput";
 import { colors } from "../../../constants/colors";
@@ -130,22 +134,21 @@ export function StudentsScreen({ teacherId }: { teacherId: string }) {
   return (
     <ScreenContainer>
       <View style={styles.screen}>
-        <Text style={styles.kicker}>TEACHER PORTAL</Text>
-        <View style={styles.headingRow}>
-          <View style={styles.headingCopy}>
-            <Text style={styles.title}>Students</Text>
-            <Text style={styles.subtitle}>
-              Manage your Grade 7 class roster.
-            </Text>
-          </View>
+        <PageHeader
+          eyebrow="TEACHER PORTAL"
+          subtitle="Manage your class roster and student records."
+          title="Students"
+          action={
           <Pressable
             accessibilityRole="button"
             onPress={openCreate}
             style={styles.addButton}
           >
-            <Text style={styles.addButtonText}>Add</Text>
+            <AppIcon color={colors.white} name="plus" size={17} />
+            <Text style={styles.addButtonText}>Add student</Text>
           </Pressable>
-        </View>
+          }
+        />
         <TextInput
           label="Search students"
           onChangeText={setSearch}
@@ -181,46 +184,77 @@ export function StudentsScreen({ teacherId }: { teacherId: string }) {
               ? "View active students"
               : "View archived students"}
           </Text>
+          <AppIcon
+            color={colors.tealDark}
+            name={isArchivedVisible ? "students" : "arrow"}
+            size={16}
+          />
         </Pressable>
         {isLoading ? (
-          <Text style={styles.stateText}>Loading students…</Text>
+          <View style={styles.loading}>
+            <ActivityIndicator color={colors.teal} size="small" />
+            <Text style={styles.stateText}>Loading students…</Text>
+          </View>
         ) : error ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>{error}</Text>
-            <Button label="Retry" onPress={() => void refresh()} />
-          </View>
+          <EmptyState
+            actionLabel="Retry"
+            compact
+            description={error}
+            icon="students"
+            onAction={() => void refresh()}
+            title="Roster unavailable"
+          />
         ) : filteredStudents.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyTitle}>
-              {isArchivedVisible ? "No archived students" : "No students yet"}
-            </Text>
-            <Text style={styles.emptyText}>
-              {isArchivedVisible
+          <EmptyState
+            actionLabel={
+              isArchivedVisible ? undefined : "Add your first student"
+            }
+            compact
+            description={
+              isArchivedVisible
                 ? "Archived students will appear here."
-                : "Add a student to start building your class roster."}
-            </Text>
-          </View>
+                : "Add a student to start building your class roster."
+            }
+            icon="students"
+            onAction={isArchivedVisible ? undefined : openCreate}
+            title={isArchivedVisible ? "No archived students" : "No students yet"}
+          />
         ) : (
-          <ScrollView contentContainerStyle={styles.list}>
+          <ScrollView
+            contentContainerStyle={styles.list}
+            showsVerticalScrollIndicator={false}
+            style={styles.studentList}
+          >
+            <Text style={styles.resultMeta}>
+              {filteredStudents.length}{" "}
+              {filteredStudents.length === 1 ? "student" : "students"}
+            </Text>
             {filteredStudents.map((student) => (
               <View key={student.id} style={styles.studentRow}>
+                <View style={styles.studentAvatar}>
+                  <Text style={styles.studentInitial}>
+                    {student.full_name.trim().slice(0, 1).toUpperCase()}
+                  </Text>
+                </View>
                 <View style={styles.studentCopy}>
                   <Text style={styles.studentName}>{student.full_name}</Text>
                   <Text style={styles.studentEmail}>{student.email}</Text>
                   <Text style={styles.studentClass}>
-                    Grade {student.grade} · Section {student.section}
+                    Grade {student.grade} · {student.section}
                   </Text>
                 </View>
                 <View style={styles.rowActions}>
                   <Pressable
                     accessibilityRole="button"
                     onPress={() => openEdit(student)}
+                    style={styles.rowAction}
                   >
                     <Text style={styles.actionText}>Edit</Text>
                   </Pressable>
                   <Pressable
                     accessibilityRole="button"
                     onPress={() => void toggleArchive(student)}
+                    style={styles.rowAction}
                   >
                     <Text style={styles.archiveText}>
                       {student.status === "active" ? "Archive" : "Restore"}
@@ -308,93 +342,94 @@ export function StudentsScreen({ teacherId }: { teacherId: string }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, gap: 13, padding: 20, paddingTop: 22 },
-  kicker: {
-    color: colors.teal,
-    fontSize: 10,
-    fontWeight: "800",
-    letterSpacing: 1.1,
-  },
-  headingRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  headingCopy: { flex: 1, gap: 3 },
-  title: { color: colors.ink, fontSize: 25, fontWeight: "800" },
-  subtitle: { color: colors.muted, fontSize: 12 },
+  screen: { flex: 1, gap: 15, paddingHorizontal: 20, paddingTop: 16 },
   addButton: {
     alignItems: "center",
     backgroundColor: colors.teal,
-    borderRadius: 8,
+    borderRadius: 9,
+    flexDirection: "row",
+    gap: 5,
     justifyContent: "center",
-    minHeight: 40,
-    minWidth: 62,
+    minHeight: 42,
+    paddingHorizontal: 10,
   },
-  addButtonText: { color: colors.white, fontSize: 14, fontWeight: "800" },
-  filters: { flexDirection: "row", gap: 10 },
+  addButtonText: { color: colors.white, fontSize: 11, fontWeight: "800" },
+  filters: { flexDirection: "row", gap: 10, paddingTop: 2 },
   filterInput: { flex: 1 },
-  archiveToggle: { alignSelf: "flex-start", paddingVertical: 5 },
+  archiveToggle: {
+    alignItems: "center",
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    gap: 7,
+    minHeight: 36,
+    paddingRight: 7,
+  },
   archiveToggleText: {
     color: colors.tealDark,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "700",
   },
-  list: { gap: 9, paddingBottom: 20 },
+  list: { gap: 9, paddingBottom: 24 },
+  studentList: { flex: 1 },
+  resultMeta: {
+    color: colors.muted,
+    fontSize: 10,
+    fontWeight: "700",
+    marginBottom: 1,
+  },
   studentRow: {
     alignItems: "center",
     backgroundColor: colors.white,
     borderColor: colors.line,
-    borderRadius: 10,
+    borderRadius: 11,
     borderWidth: 1,
     flexDirection: "row",
-    gap: 10,
-    padding: 13,
+    gap: 11,
+    minHeight: 80,
+    padding: 11,
   },
-  studentCopy: { flex: 1, gap: 4 },
-  studentName: { color: colors.ink, fontSize: 14, fontWeight: "800" },
-  studentEmail: { color: colors.muted, fontSize: 11 },
-  studentClass: { color: colors.tealDark, fontSize: 11, fontWeight: "700" },
-  rowActions: { alignItems: "flex-end", gap: 12 },
+  studentAvatar: {
+    alignItems: "center",
+    backgroundColor: colors.tealSoft,
+    borderRadius: 21,
+    height: 42,
+    justifyContent: "center",
+    width: 42,
+  },
+  studentInitial: { color: colors.tealDark, fontSize: 16, fontWeight: "800" },
+  studentCopy: { flex: 1, gap: 3 },
+  studentName: { color: colors.ink, fontSize: 13, fontWeight: "800" },
+  studentEmail: { color: colors.muted, fontSize: 10 },
+  studentClass: { color: colors.tealDark, fontSize: 10, fontWeight: "700" },
+  rowActions: { alignItems: "flex-end", gap: 2 },
+  rowAction: { minHeight: 34, justifyContent: "center", paddingHorizontal: 4 },
   actionText: {
     color: colors.tealDark,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "800",
-    padding: 4,
   },
   archiveText: {
     color: colors.danger,
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "700",
-    padding: 4,
   },
-  stateText: { color: colors.muted, fontSize: 13, paddingVertical: 18 },
-  emptyState: {
-    backgroundColor: colors.white,
-    borderColor: colors.line,
-    borderRadius: 10,
-    borderWidth: 1,
-    gap: 9,
-    marginTop: 4,
-    padding: 16,
-  },
-  emptyTitle: { color: colors.ink, fontSize: 14, fontWeight: "800" },
-  emptyText: { color: colors.muted, fontSize: 12, lineHeight: 18 },
+  stateText: { color: colors.muted, fontSize: 12 },
+  loading: { alignItems: "center", flexDirection: "row", gap: 9, paddingVertical: 14 },
   modalBackdrop: {
-    backgroundColor: "rgba(16,42,67,0.45)",
+    backgroundColor: "rgba(20,45,61,0.46)",
     flex: 1,
     justifyContent: "flex-end",
   },
   modalScroll: { justifyContent: "flex-end", minHeight: "100%" },
   modalSheet: {
     backgroundColor: colors.paper,
-    borderTopLeftRadius: 18,
-    borderTopRightRadius: 18,
-    gap: 15,
-    padding: 23,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    gap: 16,
+    padding: 20,
     paddingBottom: 32,
   },
-  modalTitle: { color: colors.ink, fontSize: 20, fontWeight: "800" },
+  modalTitle: { color: colors.ink, fontSize: 21, fontWeight: "800" },
   formError: { color: colors.danger, fontSize: 12, lineHeight: 18 },
   cancel: {
     color: colors.muted,

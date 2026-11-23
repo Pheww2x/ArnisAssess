@@ -18,7 +18,10 @@ export function RubricScreen() {
     rubric.areas[0]?.id ?? null,
   );
   return (
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.notice}>
         <Text style={styles.noticeTitle}>Draft rubric</Text>
         <Text style={styles.noticeText}>{rubric.draft_notice}</Text>
@@ -67,20 +70,27 @@ export function RubricScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { gap: 9, padding: 15, paddingBottom: 26 },
-  notice: { backgroundColor: "#FFF0D0", borderRadius: 8, gap: 5, padding: 12 },
-  noticeTitle: { color: "#70440F", fontSize: 12, fontWeight: "900" },
-  noticeText: { color: "#70440F", fontSize: 10, lineHeight: 15 },
+  content: { gap: 10, padding: 16, paddingBottom: 28 },
+  notice: {
+    backgroundColor: colors.warningSoft,
+    borderColor: "#F0DFBD",
+    borderRadius: 10,
+    borderWidth: 1,
+    gap: 6,
+    padding: 14,
+  },
+  noticeTitle: { color: "#77561D", fontSize: 13, fontWeight: "900" },
+  noticeText: { color: "#77561D", fontSize: 11, lineHeight: 17 },
   rounding: {
     color: colors.muted,
-    fontSize: 10,
-    lineHeight: 15,
+    fontSize: 11,
+    lineHeight: 17,
     paddingHorizontal: 2,
   },
   area: {
     backgroundColor: colors.white,
     borderColor: colors.line,
-    borderRadius: 9,
+    borderRadius: 11,
     borderWidth: 1,
     overflow: "hidden",
   },
@@ -88,24 +98,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    minHeight: 48,
-    paddingHorizontal: 13,
+    minHeight: 54,
+    paddingHorizontal: 15,
   },
-  areaTitle: { color: colors.ink, fontSize: 12, fontWeight: "800" },
+  areaTitle: { color: colors.ink, fontSize: 13, fontWeight: "800" },
   areaChevron: { color: colors.tealDark, fontSize: 20 },
   criteria: {
     borderTopColor: colors.line,
     borderTopWidth: 1,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
   },
   criterion: {
     borderBottomColor: colors.line,
     borderBottomWidth: 1,
-    gap: 6,
-    paddingVertical: 10,
+    gap: 7,
+    paddingVertical: 12,
   },
-  criterionTitle: { color: colors.ink, fontSize: 11, fontWeight: "800" },
-  descriptorRow: { flexDirection: "row", gap: 8 },
-  level: { color: colors.tealDark, fontSize: 9, fontWeight: "800", width: 82 },
-  descriptor: { color: colors.muted, flex: 1, fontSize: 9, lineHeight: 14 },
+  criterionTitle: { color: colors.ink, fontSize: 12, fontWeight: "800" },
+  descriptorRow: { flexDirection: "row", gap: 9 },
+  level: { color: colors.tealDark, fontSize: 10, fontWeight: "800", width: 88 },
+  descriptor: { color: colors.muted, flex: 1, fontSize: 10, lineHeight: 15 },
 });
