@@ -1,0 +1,48 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Build outputs
+dist/
+web-build/
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+android/.gradle/
+android/local.properties
+android/app/debug.keystore
+android/app/build/
+android/build/
+android/app/.cxx/
+ios/build/
+ios/Pods/
+
+# Metro
+.metro-health-check*
+
+# debug & logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+.npm-cache/
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env
+.env*.local
+android/app/google-services.json
+ios/ArnisNative/GoogleService-Info.plist
+
+# typescript
+*.tsbuildinfo
